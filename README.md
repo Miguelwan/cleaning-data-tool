@@ -1,8 +1,8 @@
 # cleaning-data-tool
 
-##Introduction
+## Introduction
 
-##How it works
+## How it works
 
 The main menu consist of the following options:
 
@@ -36,7 +36,7 @@ The main menu consist of the following options:
 
 **Select relevant data**:
 
-###Load or export a dataset
+### Load or export a dataset
 
 
 
