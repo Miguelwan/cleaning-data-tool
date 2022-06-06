@@ -29,13 +29,13 @@ def load_export_menu(dataset):
         print()
         print("What would you like to do :")
         print()
-        print("1) Load a datset.")
-        print("2) Export a datset.")
+        print("1) Load a dataset.")
+        print("2) Export the dataset.")
         print("0) Return to Main Menu.")
         load_export_choice=input("Enter your choice: ")
 
         if load_export_choice=="1":
-            continue_load=input("Remember to export your datset before loading a new one, would you like to proceed with the loading (y/n)? ")
+            continue_load=input("Remember to export your dataset before loading a new one, would you like to proceed with the loading (y/n)? ")
             if continue_load=="y":
                 dataset=load_dataset(int(load_export_choice)).copy()
 
@@ -68,7 +68,7 @@ def load_dataset (message_indicator):
         print()
         print("Since there is no dataset loaded, the export option is not avaliable.")
     print()
-    print("To load a datset please answer the following questions.")
+    print("To load a dataset please answer the following questions.")
     extension=input("Enter the extension of your dataset (csv, xlsx): ")
     name_file=input("Enter the name of your file (without extension): ")
     if extension=="csv":
@@ -113,7 +113,7 @@ def load_dataset (message_indicator):
 def export_dataset (df_to_export):
 
     print()
-    extension_file=input("Enter the extension you would like to use to export the set (csv, xlsx): ")
+    extension_file=input("Enter the extension you would like to use to export the dataset (csv, xlsx): ")
     if extension_file=="csv":
         name_export_file=input("Enter the name for the new file: ")
         name_export_file=name_export_file + ".csv"
@@ -144,7 +144,7 @@ while running_variable!=0:
     print()
     print("What would you like to do :")
     print()
-    print("1) Load or export a datset.")
+    print("1) Load or export a dataset.")
     print("2) Display basic information of the dataset.")
     print("3) Display lines of the dataset.")
     print("4) Change the type of a column.")
@@ -171,7 +171,7 @@ while running_variable!=0:
 
 
     elif choose_desire=="0":
-        continue_exit=input("Remember to export your datset, any change made before the last export wont be saved. Do you want to exit (y/n)? ")
+        continue_exit=input("Remember to export your dataset, any change made before the last export wont be saved. Do you want to exit (y/n)? ")
         if continue_exit=="y":
             running_variable=0
 
