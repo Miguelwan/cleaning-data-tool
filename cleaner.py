@@ -6,6 +6,7 @@ from datetime import datetime
 ######################################################################################################
 
 
+
                 ####################
                 #                  #
                 # LOAD EXPORT MENU #
@@ -53,6 +54,7 @@ def load_export_menu(dataset):
 
 
 ######################################################################################################
+
 
 
                 #########################
@@ -103,6 +105,7 @@ def load_dataset (message_indicator):
 ######################################################################################################
 
 
+
                 ###########################
                 #                         #
                 # EXPORT DATASET FUNCTION #
@@ -131,6 +134,234 @@ def export_dataset (df_to_export):
 
 
 ######################################################################################################
+
+
+
+                ############################
+                #                          #
+                # INFORMATION DATASET MENU #
+                #                          #
+                ############################
+
+
+def info_dataset(df_to_clean):
+
+    print()
+    print("         ################################")
+    print("         ##                            ##")
+    print("         ##  INFORMATION DATASET MENU  ##")
+    print("         ##                            ##")
+    print("         ################################")
+
+
+    exit_variable=0
+
+    while exit_variable==0:
+        print()
+        print("What information would you like to display:")
+        print()
+        print("1) Name of columns.")
+        print("2) Type of the columns.")
+        print("3) Amount of entries and missing values of the dataset.")
+        print("4) Missing values of the dataset.")
+        print("5) Information of a particular colunmn.")
+        print("0) Return to Main Menu.")
+        print()
+        information_choice=input("Enter your choice: ")
+
+        dataset_columns=obtaining_dataset_columns(df_to_clean)
+
+        if information_choice=="1":
+            string_to_print="Your dataset contains the following columns: "
+            concatenate_name_columns(dataset_columns, string_to_print)
+
+        elif information_choice=="2":
+            type_of_columns(df_to_clean, dataset_columns)
+
+        elif information_choice=="3":
+            values_information(df_to_clean, dataset_columns)
+
+        elif information_choice=="4":
+            missing_values_visualization(df_to_clean, dataset_columns)
+
+        elif information_choice=="5":
+            print()
+            column_to_explore=input("Please enter the name of the column you want to see the information: ")
+            if column_to_explore not in dataset_columns:
+                print(column_to_explore, "is not a column of the dataset, please check that the correct dataset was loaded.")
+                print()
+            else:
+                column_information(df_to_clean, column_to_explore)
+
+        elif information_choice=="0":
+            exit_variable=1
+
+        else:
+            print()
+            print("Please enter a valid choice.")
+
+    return ()
+
+
+######################################################################################################
+
+
+
+                ############################
+                #                          #
+                # DATASET COLUMNS FUNCTION #
+                #                          #
+                ############################
+
+
+def obtaining_dataset_columns(dataset):
+
+    data_columns=dataset.columns
+
+    return data_columns
+
+
+######################################################################################################
+
+
+
+                ########################
+                #                      #
+                # CONCATENATE FUNCTION #
+                #                      #
+                ########################
+
+
+def concatenate_name_columns(data_columns, string_to_print):
+
+    print()
+    info_data=string_to_print
+    counter=0
+    space=" "
+    for column_info in data_columns:
+        if counter==1:
+            space=", "
+        info_data=info_data + space + column_info
+        counter=1
+    print(info_data+".")
+    print()
+
+    return ()
+
+
+######################################################################################################
+
+
+
+                #################
+                #               #
+                # TYPE FUNCTION #
+                #               #
+                #################
+
+
+def type_of_columns(dataset, data_columns):
+
+    print()
+    for column in data_columns:
+        print("The column", column, "has type", dataset.dtypes[column], "in its entries.")
+        print()
+
+    return ()
+
+
+######################################################################################################
+
+
+
+                ###############################
+                #                             #
+                # VALUES INFORMATION FUNCTION #
+                #                             #
+                ###############################
+
+
+def values_information(dataset, data_columns):
+
+    print()
+    missing_data_counter=0
+    for column in data_columns:
+        missing_data_counter=missing_data_counter+len(dataset[dataset[column].isnull()])
+        print("The column", column, "has", len(dataset[column])-
+            len(dataset[dataset[column].isnull()]), "values and",
+            len(dataset[dataset[column].isnull()]), "missing values.")
+        print()
+    print("The dataset contains a total of", missing_data_counter, "missing values.")
+
+    return()
+
+
+######################################################################################################
+
+
+
+                ###################################
+                #                                 #
+                # MISSING VALUES DISPLAY FUNCTION #
+                #                                 #
+                ###################################
+
+
+def missing_values_visualization(dataset, data_columns):
+
+    print()
+    print("The missing values are in the rows: ")
+    for column in data_columns:
+        if len(dataset[dataset[column].isnull()])>0:
+            print(dataset[dataset[column].isnull()])
+    print()
+
+    return()
+
+
+######################################################################################################
+
+
+
+                #######################################
+                #                                     #
+                # COLUMN INFORMATION DISPLAY FUNCTION #
+                #                                     #
+                #######################################
+
+
+def column_information(dataset, column_to_explore):
+
+    print()
+    print("The column", column_to_explore, "has type", dataset.dtypes[column_to_explore], "in its entries.")
+    print()
+    print("The column", column_to_explore, "has", len(dataset[column_to_explore])-
+            len(dataset[dataset[column_to_explore].isnull()]), "values and",
+            len(dataset[dataset[column_to_explore].isnull()]), "missing values.")
+    print()
+    if len(dataset[dataset[column_to_explore].isnull()])>0:
+        print()
+        print("The followinf rows contain missing values in the column"+ column_to_explore +":" )
+        print(dataset[dataset[column_to_explore].isnull()])
+        print()
+
+    input_display_choice=input("Would you like to see information about the inputs of the column "+ column_to_explore +" (y/n)? ")
+    if input_display_choice=="y":
+        input_display_menu(dataset, column_to_explore)
+
+
+    return()
+
+
+######################################################################################################
+
+
+
+                #############
+                #           #
+                # MAIN MENU #
+                #           #
+                #############
 
 
 while running_variable!=0:
@@ -166,6 +397,13 @@ while running_variable!=0:
 
         if df_to_work.columns[0]=='Error_message':
             dataset_iterated=0
+
+
+    elif choose_desire=="2":
+        if dataset_iterated!=0:
+            info_dataset(df_to_work)
+        else:
+            print("No datset is loaded, please load a dataste first.")
 
 
 
