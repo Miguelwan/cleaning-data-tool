@@ -232,18 +232,18 @@ def obtaining_dataset_columns(dataset):
                 ########################
 
 
-def concatenate_name_columns(data_columns, string_to_print):
+def concatenate_name_columns(set_to_concatenate, string_to_print):
 
     print()
-    info_data=string_to_print
+    concatenated_string=string_to_print
     counter=0
     space=" "
-    for column_info in data_columns:
+    for word_to_add in set_to_concatenate:
         if counter==1:
             space=", "
-        info_data=info_data + space + column_info
+        concatenated_string=concatenated_string + space + word_to_add
         counter=1
-    print(info_data+".")
+    print(concatenated_string+".")
     print()
 
     return ()
@@ -341,7 +341,7 @@ def column_information(dataset, column_to_explore):
     print()
     if len(dataset[dataset[column_to_explore].isnull()])>0:
         print()
-        print("The followinf rows contain missing values in the column"+ column_to_explore +":" )
+        print("The following rows contain missing values in the column"+ column_to_explore +":" )
         print(dataset[dataset[column_to_explore].isnull()])
         print()
 
@@ -351,6 +351,157 @@ def column_information(dataset, column_to_explore):
 
 
     return()
+
+
+######################################################################################################
+
+
+
+                ######################
+                #                    #
+                # INPUT DISPLAY MENU #
+                #                    #
+                ######################
+
+
+def input_display_menu(dataset, column_to_explore):
+
+    print()
+    print("         ##########################")
+    print("         ##                      ##")
+    print("         ##  INPUT DISPLAY MENU  ##")
+    print("         ##                      ##")
+    print("         ##########################")
+
+
+    exit_variable=0
+
+    while exit_variable==0:
+        print()
+        print("What input information would you like to display :")
+        print()
+        print("1) Characters in the entries of "+column_to_explore+".")
+        print("2) Information about an specific character in "+column_to_explore+".")
+        print("3) Information about an entry in "+column_to_explore+".")
+        print("0) Return to Main Menu.")
+        load_information_choice=input("Enter your choice: ")
+
+        if load_information_choice=="1":
+            print()
+            print("This might take some time.")
+
+            set_of_entries=input_set_calculation(dataset, column_to_explore, 0, len(dataset[column_to_explore]))
+
+            print()
+            print("The column", column_to_explore, "has the following characters in its entries:")
+            print(set_of_entries)
+            print()
+            Latin_alphabet_and_numbers={"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q",
+                        "R","S","T","U","V","W","X","Y","Z","a","b","c","d",
+                        "e","f","g","h","i","j","k","l","m","n","o","p","q",
+                        "r","s","t","u","v","w","x","y","z","1","2","3","4","5","6","7","8","9","0"}
+            print("The column", column_to_explore, "has the following special characters (not numbers, neither a letter in the latin alphabet:)")
+            print(set_of_entries-Latin_alphabet_and_numbers)
+
+
+        elif load_information_choice=="2":
+            print()
+            found_entries, set_found_entries, token_to_search=input_character_calculation(dataset, column_to_explore, 0, len(dataset[column_to_explore]))
+
+            print("There are", len(found_entries), "entries with '"+token_to_search+"'.")
+            print()
+            print("There are", len(set_found_entries), "unique entries with'"+token_to_search+"'.")
+
+            display_all_unique_entries=input("Would you like to display the unique entries (y/n)? ")
+            if display_all_unique_entries=="y":
+                string_to_print="The character "+token_to_search+" is in the following entries: "
+                concatenate_name_columns(set_found_entries, string_to_print)
+
+
+        elif load_information_choice=="3":
+            print()
+            found_entries, token_to_search=input_string_calculation(dataset, column_to_explore, 0, len(dataset[column_to_explore]))
+
+            print("There are", len(found_entries), "entries equal to '"+token_to_search+"'.")
+
+
+        elif load_information_choice=="0":
+            exit_variable=1
+
+
+        else:
+            print()
+            print("Please enter a valid choice.")
+
+    return ()
+
+
+######################################################################################################
+
+
+
+                ##################################
+                #                                #
+                # SET INPUT CALCULATION FUNCTION #
+                #                                #
+                ##################################
+
+
+def input_set_calculation(dataset, column_to_explore, lower_bound, upper_bound):
+
+    set_of_entries = set()
+    for temporal_entry in set(dataset[column_to_explore][lower_bound:upper_bound]):
+        set_of_entries=set_of_entries.union(set(str(temporal_entry)))
+
+    return (set_of_entries)
+
+
+######################################################################################################
+
+
+
+                ########################################
+                #                                      #
+                # INPUT CHARACTER CALCULATION FUNCTION #
+                #                                      #
+                ########################################
+
+
+def input_character_calculation(dataset, column_to_explore, lower_bound, upper_bound):
+
+    found_words=[]
+    token_to_search=input("Please enter the character you would like to find: ")
+
+    for temporal_entry in dataset[column_to_explore][lower_bound:upper_bound]:
+        if token_to_search in set(str(temporal_entry)):
+            found_words.append(str(temporal_entry))
+
+    set_found_words=set(found_words)
+
+    return found_words, set_found_words, token_to_search
+
+
+######################################################################################################
+
+
+
+                ####################################
+                #                                  #
+                # INPUT ENTRY CALCULATION FUNCTION #
+                #                                  #
+                ####################################
+
+
+def input_string_calculation(dataset, column_to_explore, lower_bound, upper_bound):
+
+    found_words=[]
+    token_to_search=input("Please enter the entry you would like to find: ")
+
+    for temporal_entry in dataset[column_to_explore][lower_bound:upper_bound]:
+        if token_to_search == str(temporal_entry):
+            found_words.append(str(temporal_entry))
+
+    return found_words, token_to_search
 
 
 ######################################################################################################
