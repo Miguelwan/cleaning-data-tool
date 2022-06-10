@@ -172,7 +172,7 @@ def info_dataset(df_to_clean):
         dataset_columns=obtaining_dataset_columns(df_to_clean)
 
         if information_choice=="1":
-            string_to_print="Your dataset contains the following columns: "
+            string_to_print="Your dataset contains the following columns:"
             concatenate_name_columns(dataset_columns, string_to_print)
 
         elif information_choice=="2":
@@ -508,6 +508,194 @@ def input_string_calculation(dataset, column_to_explore, lower_bound, upper_boun
 
 
 
+                ########################
+                #                      #
+                # DISPLAY DATASET MENU #
+                #                      #
+                ########################
+
+
+def display_dataset_menu (dataset):
+
+    print()
+    print("         ############################")
+    print("         ##                        ##")
+    print("         ##  DISPLAY DATASET MENU  ##")
+    print("         ##                        ##")
+    print("         ############################")
+
+
+    exit_variable=0
+
+    while exit_variable==0:
+        print()
+        print("Which rows would you like to display:")
+        print()
+        print("1) First n rows.")
+        print("2) Last n rows.")
+        print("3) Rows by interval.")
+        print("4) Rows by input.")
+        print("0) Return to Main Menu")
+        print()
+        visualization_choice=input("Enter your choice: ")
+
+        if visualization_choice=="1":
+            print()
+            number_to_show=int(input("Enter the number of lines you would like to see: "))
+            if number_to_show<1:
+                print("Please enter a positive number.")
+            else:
+                display_dataset(dataset, 0, int(number_to_show))
+
+
+        elif visualization_choice=="2":
+            print()
+            number_to_show=int(input("Enter the number of lines you would like to see: "))
+            if number_to_show<1:
+                print("Please enter a positive number.")
+            else:
+                display_dataset(dataset, -int(number_to_show), len(dataset))
+
+
+        elif visualization_choice=="3":
+            print()
+            lower_bound_to_show=int(input("Enter the first line you would like to see (starting in 1): "))
+            upper_bound_to_show=int(input("Enter the last line you would like to see (starting in 1): "))
+            if lower_bound_to_show>upper_bound_to_show:
+                print()
+                print("The visualization cannot be done unless the first line you would like to see is smaller (or equal) than the last line you would like to see.")
+
+            elif lower_bound_to_show<1:
+                print("Please enter positive numbers.")
+
+            else:
+                lower_bound_to_show=lower_bound_to_show-1
+                display_dataset(dataset, lower_bound_to_show, upper_bound_to_show)
+
+
+        elif visualization_choice=="4":
+            print()
+            print("To display rows with an specific input, please answer the following questions. Remember that only rows with the same input will be display, e.g. '1' is different to '1.0'")
+            print()
+            column_to_explore=input("In which column is the input you want to use? ")
+
+            data_columns=obtaining_dataset_columns(dataset)
+            if column_to_explore not in data_columns:
+                print()
+                print(column_to_explore, "is not a column of the dataset.")
+
+            else:
+                valid_input=1
+                all_thedataset_choice=input("Do you want to display the input over all the dataset (y/n)? ")
+                if all_thedataset_choice=="y":
+                    lower_bound_to_show=0
+                    upper_bound_to_show=len(dataset)
+
+                else:
+                    print()
+                    print("Please define the subdataset.")
+                    lower_bound_to_show=int(input("Enter the first line of the subdataset (starting in 0): "))
+                    upper_bound_to_show=int(input("Enter the last line of the subdataset (starting in 1): "))
+
+                    if lower_bound_to_show>=upper_bound_to_show:
+                        print()
+                        print("The visualization cannot be done unless the first line of the subdataset is smaller than the last line of the subdataset.")
+                        valid_input=0
+
+                    elif lower_bound_to_show<0:
+                        print("Please enter a non-negative number.")
+                        valid_input=0
+
+                if valid_input==1:
+                    sub_dataset=sub_dataset_by_input(dataset, column_to_explore, lower_bound_to_show, upper_bound_to_show).copy()
+                    display_dataset(sub_dataset, 0, len(sub_dataset))
+
+
+
+
+
+        elif visualization_choice=="0":
+            exit_variable=1
+
+
+        else:
+            print()
+            print("Please enter a valid choice.")
+
+
+######################################################################################################
+
+
+
+                ####################
+                #                  #
+                # DISPLAY FUNCTION #
+                #                  #
+                ####################
+
+
+def display_dataset(dataset, lower_bound_to_show, upper_bound_to_show):
+
+    pd.set_option('display.max_rows', None)
+
+    print()
+    print(dataset[lower_bound_to_show:upper_bound_to_show])
+
+    return ()
+
+
+######################################################################################################
+
+
+
+                #################################
+                #                               #
+                # SUB-DATASET BY INPUT FUNCTION #
+                #                               #
+                #################################
+
+
+def sub_dataset_by_input(dataset, column_to_explore, lower_bound_to_show, upper_bound_to_show):
+
+    token_to_search=input("Please enter the input you would like use: ")
+
+    sub_dataset=dataset[lower_bound_to_show:upper_bound_to_show].copy()
+    initial_type=sub_dataset.dtypes[column_to_explore]
+
+    sub_dataset=change_type_by_column(sub_dataset, column_to_explore, "str")
+
+    sub_dataset=sub_dataset[sub_dataset[column_to_explore]==token_to_search]
+
+    sub_dataset=change_type_by_column(sub_dataset, column_to_explore, initial_type)
+
+    return (sub_dataset)
+
+
+######################################################################################################
+
+
+
+                ################################
+                #                              #
+                # CHANGE TYPE COLUMN FUNCTION  #
+                #                              #
+                ################################
+
+
+def change_type_by_column(dataset, column_to_change, desire_type):
+
+    new_dataset=dataset.copy()
+    new_dataset[column_to_change]=new_dataset[column_to_change].astype(desire_type)
+
+
+    return (new_dataset)
+
+
+
+######################################################################################################
+
+
+
                 #############
                 #           #
                 # MAIN MENU #
@@ -553,6 +741,13 @@ while running_variable!=0:
     elif choose_desire=="2":
         if dataset_iterated!=0:
             info_dataset(df_to_work)
+        else:
+            print("No datset is loaded, please load a dataste first.")
+
+
+    elif choose_desire=="3":
+        if dataset_iterated!=0:
+            display_dataset_menu(df_to_work)
         else:
             print("No datset is loaded, please load a dataste first.")
 
