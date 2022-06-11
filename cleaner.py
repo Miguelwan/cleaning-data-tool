@@ -1051,6 +1051,152 @@ def exchange_column_dateset(dataset, column_to_change, new_arrange_column, data_
 
 
 
+                ##########################
+                #                        #
+                # CHANGING ENCODING MENU #
+                #                        #
+                ##########################
+
+
+def changing_encoding_menu(dataset):
+
+    print()
+    print("         ##############################")
+    print("         ##                          ##")
+    print("         ##  CHANGING ENCODING MENU  ##")
+    print("         ##                          ##")
+    print("         ##############################")
+
+
+    exit_variable=0
+
+    while exit_variable==0:
+        print()
+        continue_encoding=input("Only the encoding of strings can be modified, would you like to proceed to re-encode a column (y/n)? ")
+        if continue_encoding=="y":
+            dataset=encoding_function(dataset).copy()
+
+        leave_answer=input("Would you like to return to the main menu (y/n)? ")
+        if leave_answer=="y":
+            exit_variable=1
+
+    return dataset
+
+
+######################################################################################################
+
+
+
+                ##############################
+                #                            #
+                # CHANGING ENCODING FUNCTION #
+                #                            #
+                ##############################
+
+
+def encoding_function (dataset):
+
+    print()
+    data_columns=obtaining_dataset_columns(dataset)
+
+    example_word=input("Please enter an example word of the error (case-sensitive): ")
+    example_word_right=input("Please enter the example word correctly written (case-sensitive): ")
+
+    encoding_samples(example_word, example_word_right)
+
+    print()
+
+    print("Please choose the right endocing and decoding from the previous list.")
+
+    encoding=input("Enter encoding: ")
+    decoding=input("Enter decoding: ")
+    column_error=input("Enter the column with the encoding error: ")
+
+    no_typo_entry=new_encoding_of_words(dataset, column_error, encoding, decoding)
+
+    df_no_typos=exchange_column_dateset(dataset, column_error, no_typo_entry, data_columns).copy()
+
+    print()
+    print("The columns", column_error, "of the dataset has  been modified.")
+    print("No other column was modified. You can modify other column or return to the main menu.")
+    print()
+
+    return df_no_typos
+
+
+######################################################################################################
+
+
+
+                ###############################
+                #                             #
+                # SAMPLE OF ENCODING FUNCTION #
+                #                             #
+                ###############################
+
+
+def encoding_samples(example_word, example_word_right):
+
+    codecs_options=["ascii", "big5", "big5hkscs", "cp037", "cp273", "cp424", "cp437",
+                    "cp500", "cp720", "cp737", "cp775", "cp850", "cp852", "cp855", "cp856",
+                    "cp857", "cp858", "cp860", "cp861", "cp862", "cp863", "cp864", "cp865", "cp866",
+                    "cp869", "cp874", "cp875", "cp932", "cp949", "cp950", "cp1006", "cp1026", "cp1125",
+                    "cp1140", "cp1250", "cp1251", "cp1252", "cp1253", "cp1254", "cp1255", "cp1256", "cp1257",
+                    "cp1258", "euc_jp", "euc_jis_2004", "euc_jisx0213", "euc_kr", "gb2312", "gbk", "gb18030", "hz",
+                    "iso2022_jp", "iso2022_jp_1", "iso2022_jp_2", "iso2022_jp_2004", "iso2022_jp_3", "iso2022_jp_ext",
+                    "iso2022_kr", "latin_1", "iso8859_2", "iso8859_3", "iso8859_4", "iso8859_5", "iso8859_6",
+                    "iso8859_7", "iso8859_8", "iso8859_9", "iso8859_10", "iso8859_11", "iso8859_13", "iso8859_14",
+                    "iso8859_15", "iso8859_16", "johab", "koi8_r", "koi8_t", "koi8_u", "kz1048", "mac_cyrillic",
+                    "mac_greek", "mac_iceland", "mac_latin2", "mac_roman", "mac_turkish", "ptcp154", "shift_jis",
+                    "shift_jis_2004", "shift_jisx0213", "utf_32", "utf_32_be", "utf_32_le", "utf_16", "utf_16_be",
+                    "utf_16_le", "utf_7", "utf_8", "utf_8_sig", "unicode_escape"]
+
+    print()
+    for option_1 in codecs_options:
+        for option_2 in codecs_options:
+            new_example_word=example_word.encode(option_1, 'ignore')
+            new_encoding_word=new_example_word.decode(option_2, 'ignore')
+            if new_encoding_word==example_word_right:
+                print("The following codecs write the example word correct. Encoding = ",
+                        option_1, ", decoding =", option_2, ", example word = ", new_encoding_word)
+                print()
+
+    return ()
+
+
+######################################################################################################
+
+
+
+                ##########################
+                #                        #
+                # RE - ENCODING FUNCTION #
+                #                        #
+                ##########################
+
+
+def new_encoding_of_words(dataset, column_error, encoding, decoding):
+
+    no_typo_entry=[]
+    for entry_element in range(len(dataset[column_error])):
+        entry_typo=dataset[column_error][entry_element]
+
+        if type(entry_typo)==str:
+            newstr=entry_typo.encode(encoding, 'ignore')
+            entry_clean=newstr.decode(decoding, 'ignore')
+
+        else:
+            entry_clean=entry_typo
+
+        no_typo_entry.append(entry_clean)
+
+    return (no_typo_entry)
+
+
+######################################################################################################
+
+
+
                 #############
                 #           #
                 # MAIN MENU #
@@ -1114,6 +1260,16 @@ while running_variable!=0:
         else:
             print("No datset is loaded, please load a dataste first.")
 
+
+    elif choose_desire=="5":
+        print()
+        print("To fix encoding errors you must have and example word of the error and how it should appear. You can visualize some rows of the dataset to find examples.")
+        have_an_example=input("Do you have an example of the error (y/n)? ")
+        if have_an_example=="y":
+            if dataset_iterated!=0:
+                df_to_work=changing_encoding_menu(df_to_work).copy()
+            else:
+                print("No datset is loaded, please load a dataste first.")
 
 
 
