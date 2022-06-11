@@ -691,6 +691,361 @@ def change_type_by_column(dataset, column_to_change, desire_type):
     return (new_dataset)
 
 
+######################################################################################################
+
+
+
+                #####################
+                #                   #
+                # CHANGE TYPES MENU #
+                #                   #
+                #####################
+
+
+def change_type_menu (dataset):
+
+    print()
+    print("         #########################")
+    print("         ##                     ##")
+    print("         ##  CHANGE TYPES MENU  ##")
+    print("         ##                     ##")
+    print("         #########################")
+
+
+    print()
+    data_columns=obtaining_dataset_columns(dataset)
+
+    exit_variable=0
+
+    while exit_variable==0:
+
+        for column in data_columns:
+            print("The column ", column, "has type", dataset.dtypes[column])
+            print()
+
+        column_to_change=input("To which column would you like to change the type: ")
+
+        if column_to_change not in data_columns:
+            print(column_to_change, "is not a column of the dataset.")
+            print()
+            want_to_leave=input("Would yo like to return to the main menu (y/n)? ")
+            if want_to_leave=="y":
+                exit_variable=1
+
+        else:
+
+            print()
+            print("The column ", column_to_change, "has type", dataset.dtypes[column_to_change])
+            print("It can be change to one of the folloowing types:")
+            print()
+            print("1) object.")
+            print("2) int64.")
+            print("3) float64.")
+            print("4) bool.")
+            print("5) datetime64.")
+            print("0) return to main menu.")
+            print()
+            type_choice=input("Enter your choice: ")
+
+            if type_choice=="1":
+                dataset=change_type_by_column(dataset, column_to_change, 'object').copy()
+
+            elif type_choice=="2":
+                dataset=change_type_by_column(dataset, column_to_change, 'int64').copy()
+
+            elif type_choice=="3":
+                dataset=change_type_by_column(dataset, column_to_change, 'float64').copy()
+
+            elif type_choice=="4":
+                dataset=change_type_by_column(dataset, column_to_change, 'bool').copy()
+
+            elif type_choice=="5":
+                date_time_format=date_time_format_function()
+
+                datetime_fixed=change_date_time_arrange(dataset, column_to_change, date_time_format)
+                print("The change is in progress.")
+                dataset=exchange_column_dateset(dataset, column_to_change, datetime_fixed, data_columns).copy()
+                print()
+                print("The change is complete.")
+
+            elif type_choice=="0":
+                exit_variable=1
+
+            else:
+                print()
+                print("Please enter a valid choice.")
+
+    return dataset
+
+
+######################################################################################################
+
+
+
+                #########################
+                #                       #
+                # DATE FORMAT FUNCTIONS #
+                #                       #
+                #########################
+
+
+
+                ####################
+                #                  #
+                # WEEKDAY FUNCTION #
+                #                  #
+                ####################
+
+
+
+def weekday_function():
+
+    print("In which format is the weekday:")
+    print("1) Weekday as abbreviated name.")
+    print("2) Weekday as full name.")
+    print("3) Weekday as a decimal number, where 0 is Sunday and 6 is Saturday.")
+    week_format=int(input("Enter your choice: "))
+
+    if week_format==1:
+        return "%a"
+    elif week_format==2:
+        return "%A"
+    elif week_format==3:
+        return "%w"
+    else:
+        print("That was not a valid choice, the weekday format is set by default to the full name.")
+        return "%A"
+
+
+                #################
+                #               #
+                # YEAR FUNCTION #
+                #               #
+                #################
+
+
+
+def year_function():
+
+    print("In which format is the year:")
+    print("1) Year without century number (00 - 99).")
+    print("2) Year with century number (0000 - 9999).")
+    year_format=int(input("Enter your choice: "))
+
+    if year_format==1:
+        return "%y"
+    elif year_format==2:
+        return "%Y"
+    else:
+        print("That was not a valid choice, the year format is set by default with century.")
+        return "%Y"
+
+
+                ##################
+                #                #
+                # MONTH FUNCTION #
+                #                #
+                ##################
+
+
+
+def month_function():
+
+    print("In which format is the month:")
+    print("1) Month as abbreviated name.")
+    print("2) Month as full name.")
+    print("3) Month as number (01 - 12).")
+    month_format=int(input("Enter your choice: "))
+
+    if month_format==1:
+        return "%b"
+    elif month_format==2:
+        return "%B"
+    elif month_format==3:
+        return "%m"
+    else:
+        print("That was not a valid choice, the month format is set by default to number of the month.")
+        return "%m"
+
+
+                ################
+                #              #
+                # DAY FUNCTION #
+                #              #
+                ################
+
+
+
+def daynumber_function():
+
+    print("In which format is the day:")
+    print("1) Day of the month (01 - 31).")
+    print("2) Day of the year (001 - 366).")
+    day_format=int(input("Enter your choice: "))
+
+    if day_format==1:
+        return "%d"
+    elif day_format==2:
+        return "%j"
+    else:
+        print("That was not a valid choice, the day format is set by default to day of the month.")
+        return "%d"
+
+
+                #################
+                #               #
+                # HOUR FUNCTION #
+                #               #
+                #################
+
+
+
+def hour_function():
+
+    print("In which format is the hour:")
+    print("1) 24-hour clock.")
+    print("2) 12-hour clock.")
+    hour_format=int(input("Enter your choice: "))
+
+    if hour_format==1:
+        return "%H"
+    elif hour_format==2:
+        return "%I"
+    else:
+        print("That was not a valid choice, the hour format is set by default to 24-hour.")
+        return "%H"
+
+
+                ######################
+                #                    #
+                # DATE TIME FUNCTION #
+                #                    #
+                ######################
+
+
+
+def date_time_format_function():
+
+    date_format_complete=0
+    dateformat=""
+    date_symbols={"Weekday", "Year", "Month", "Day", "Hour", "Minute", "Second", "PM/AM"}
+    format_for_user=""
+    print("Please indicate the format of the date in the dataset.")
+    print()
+    while date_format_complete<7:
+        message_options=""
+        lenght_message=0
+        for option_date in date_symbols:
+            message_options=message_options+option_date
+            lenght_message=lenght_message+1
+            if lenght_message!=len(date_symbols):
+                message_options=message_options+", "
+
+        if date_format_complete==0:
+            local_date_format=input("Which information appears first ("+message_options+")? ")
+            if local_date_format == "Weekday":
+                interpretator=weekday_function()
+            elif local_date_format == "Year":
+                interpretator=year_function()
+            elif local_date_format == "Month":
+                interpretator=month_function()
+            elif local_date_format == "Day":
+                interpretator=daynumber_function()
+            elif local_date_format == "Hour":
+                interpretator=hour_function()
+            elif local_date_format == "Minute":
+                interpretator="%M"
+            elif local_date_format == "Second":
+                interpretator="%S"
+            elif local_date_format == "PM/AM":
+                interpretator="%p"
+            else:
+                break
+
+        else:
+            local_date_format=input("What appears next ("+message_options+")? ")
+            if local_date_format == "Weekday":
+                interpretator=weekday_function()
+            elif local_date_format == "Year":
+                interpretator=year_function()
+            elif local_date_format == "Month":
+                interpretator=month_function()
+            elif local_date_format == "Day":
+                interpretator=daynumber_function()
+            elif local_date_format == "Hour":
+                interpretator=hour_function()
+            elif local_date_format == "Minute":
+                interpretator="%M"
+            elif local_date_format == "Second":
+                interpretator="%S"
+            elif local_date_format == "PM/AM":
+                interpretator="%p"
+            else:
+                break
+
+        format_for_user=format_for_user+local_date_format
+        dateformat=dateformat+interpretator
+
+
+        if date_format_complete<6:
+            is_format_complete=input("Is the format equal to '"+format_for_user+"' (y/n)? ")
+            if is_format_complete=="y":
+                break
+            else:
+                separator_date_format=input("What separator appears next (:, -, /, etc)? ")
+                dateformat=dateformat+separator_date_format
+                format_for_user=format_for_user+separator_date_format
+
+        date_format_complete=date_format_complete+1
+        date_symbols=date_symbols-{local_date_format}
+
+    return dateformat
+
+
+######################################################################################################
+
+
+
+                ##############################
+                #                            #
+                # CHANGE DATE TIME FUNCTION  #
+                #                            #
+                ##############################
+
+
+def change_date_time_arrange(dataset, column_to_change, date_time_format):
+
+    datetime_fixed=[]
+
+    for date_time_to_fix in dataset[column_to_change]:
+        datetime_fixed.append(datetime.strptime(date_time_to_fix, date_time_format))
+
+
+    return (datetime_fixed)
+
+
+######################################################################################################
+
+
+
+                #############################
+                #                           #
+                # EXCHANGE COLUMN FUNCTION  #
+                #                           #
+                #############################
+
+
+def exchange_column_dateset(dataset, column_to_change, new_arrange_column, data_columns):
+
+    df_new_data=pd.DataFrame(columns=data_columns)
+    for column in data_columns:
+        if column==column_to_change:
+            df_new_data[column]=new_arrange_column
+        else:
+            df_new_data[column]=dataset[column]
+
+    return df_new_data
+
 
 ######################################################################################################
 
@@ -751,6 +1106,14 @@ while running_variable!=0:
             display_dataset_menu(df_to_work)
         else:
             print("No datset is loaded, please load a dataste first.")
+
+
+    elif choose_desire=="4":
+        if dataset_iterated!=0:
+            df_to_work=change_type_menu(df_to_work).copy()
+        else:
+            print("No datset is loaded, please load a dataste first.")
+
 
 
 
