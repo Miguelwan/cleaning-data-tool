@@ -722,6 +722,7 @@ while running_variable!=0:
     print("6) Take care of missing data.")
     print("7) Modify data.")
     print("8) Select relevant data.")
+    print("9) Help/About.")
     print("0) Exit.")
     print()
     choose_desire=input("Enter your choice: ")
